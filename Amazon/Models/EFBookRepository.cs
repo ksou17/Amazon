@@ -8,6 +8,7 @@ namespace Amazon.Models
     public class EFBookRepository: IBookRepository
     {
         private BookstoreContext context { get; set; }
+
         public EFBookRepository (BookstoreContext temp)
         {
             context = temp;
