@@ -12,30 +12,36 @@ namespace Amazon.Pages
     public class PurchaseModel : PageModel
     {
         private IBookRepository repo { get; set; }
-        public PurchaseModel (IBookRepository temp)
-        {
-            repo = temp;
-        }
-
         public Basket Basket { get; set; }
         public string ReturnUrl { get; set; }
+
+        public PurchaseModel (IBookRepository temp, Basket b)
+        {
+            repo = temp;
+            Basket = b;
+        }
+
+       
         public void OnGet(string returnUrl)
         {
             ReturnUrl = returnUrl ?? "/";
-            Basket = HttpContext.Session.GetJson<Basket>("Basket") ?? new Basket();
+    
         }
 
         public IActionResult OnPost(int bookId, string returnUrl)
         {
             Book b = repo.Books.FirstOrDefault(x => x.BookId == bookId);
-
-            Basket =  HttpContext.Session.GetJson<Basket>("Basket") ?? new Basket();
+        
             Basket.AddItem(b, 1);
-
-            HttpContext.Session.SetJson("Basket", Basket);
 
             return RedirectToPage(new { ReturnUrl = returnUrl });
 
+        }
+
+        public IActionResult OnPostRemove (int bookId, string returnUrl)
+        {
+            Basket.RemoveItem(Basket.Items.First(x => x.Book.BookId == bookId).Book);
+            return RedirectToPage (new { ReturnUrl = returnUrl });
         }
     }
 }
