@@ -41,5 +41,9 @@ namespace Amazon.Models
 
         [Required(ErrorMessage = "Please enter your email address")]
         public string Email { get; set; }
+
+        [BindNever]
+        public bool Purchased { get; set; }
+
     }
 }
